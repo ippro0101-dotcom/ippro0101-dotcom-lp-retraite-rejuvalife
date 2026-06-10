@@ -250,18 +250,9 @@ export default function LandingPage() {
   // Testimonials Carousel State
   const [testimonialIndex, setTestimonialIndex] = useState(0);
 
-  // Tally native fall-back contact model validation state
-  const [tallyEmbedMode, setTallyEmbedMode] = useState(false); // Toggle to test real Tally embed or native beautiful form
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [formLoading, setFormLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    dietPreference: 'Tous',
-    motivations: ''
-  });
+  // Tally iframe loading state for elegant placeholder spinner
+  const [tallyLoading, setTallyLoading] = useState(true);
+  const tallySrc = "https://tally.so/embed/5BVWNP?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1";
 
   // Cookie and GDPR states
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
@@ -277,6 +268,38 @@ export default function LandingPage() {
         setShowCookieBanner(true);
       }
     }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Load Tally embed widget script dynamically for native heights
+  useEffect(() => {
+    const scriptId = "tally-embed-script";
+    const runTally = () => {
+      // @ts-ignore
+      if (typeof Tally !== "undefined") {
+        // @ts-ignore
+        Tally.loadEmbeds();
+      }
+    };
+
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement("script");
+      script.id = scriptId;
+      script.src = "https://tally.so/widgets/embed.js";
+      script.async = true;
+      script.onload = runTally;
+      script.onerror = runTally;
+      document.body.appendChild(script);
+    } else {
+      runTally();
+    }
+  }, []);
+
+  // Fallback loading timer for Tally Form to prevent infinite spinning spinner
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTallyLoading(false);
+    }, 1500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -351,17 +374,7 @@ export default function LandingPage() {
     }
   };
 
-  // Custom Form Submit Mock (Pristine UX UX feedback)
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.firstName || !formData.email || !formData.phone) return;
-    
-    setFormLoading(true);
-    setTimeout(() => {
-      setFormLoading(false);
-      setFormSubmitted(true);
-    }, 1200);
-  };
+
 
   return (
     <div className="bg-[#FAF8F5] text-[#012613] font-sans antialiased min-h-screen selection:bg-[#C38F27]/20 selection:text-[#C38F27]">
@@ -804,8 +817,8 @@ export default function LandingPage() {
                       >
                         <ChevronRight className="w-4 h-4" />
                       </button>
-                    </div>
 
+                    </div>
                   </div>
                 </motion.div>
               </AnimatePresence>
@@ -816,195 +829,42 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* FORMULAIRE TALLY EMBEDDING & NATIVE REGISTRATION GRID */}
+      {/* FORMULAIRE TALLY EMBEDDING & REGISTRATION SECTION */}
       <section id="inscription" className="py-24 bg-white relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           
           <div className="max-w-2xl mx-auto space-y-4 mb-12">
-            <span className="text-xs font-bold tracking-[0.2em] text-[#C38F27] uppercase">RÉSERVEZ VOTRE PLACE</span>
+            <span className="text-xs font-bold tracking-[0.2em] text-[#C38F27] uppercase">RÉSERVEZ VOTRE SÉJOUR</span>
             <h3 className="text-3xl sm:text-4xl font-serif font-light text-[#012613]">Inscrivez-vous à la prochaine session</h3>
             <p className="text-slate-600 font-light text-sm sm:text-base leading-relaxed">
-              Pour réserver votre immersion ou débuter votre audit énergétique, veuillez renseigner vos coordonnées ci-dessous.
+              Veuillez renseigner vos coordonnées ci-dessous via notre formulaire sécurisé pour réserver votre immersion ou débuter votre audit énergétique. Sissi Gilton vous répondra personnellement.
             </p>
-
-            {/* Toggle Switch between beautiful native form and physical tally iframe so they can insert external integrations effortlessly */}
-            <div className="flex items-center justify-center gap-3 pt-4">
-              <span className={`text-xs font-medium tracking-wider transition ${!tallyEmbedMode ? 'text-[#C38F27] font-bold' : 'text-slate-400'}`}>FORMULAIRE INTERACTIF</span>
-              <button 
-                onClick={() => setTallyEmbedMode(!tallyEmbedMode)}
-                className={`relative w-12 h-6.5 rounded-full p-0.5 transition-colors duration-300 focus:outline-none ${tallyEmbedMode ? 'bg-[#C38F27]' : 'bg-slate-300'}`}
-              >
-                <div className={`w-5.5 h-5.5 rounded-full bg-white shadow-md transform transition-transform duration-300 ${tallyEmbedMode ? 'translate-x-5.5' : 'translate-x-0'}`} />
-              </button>
-              <span className={`text-xs font-medium tracking-wider transition ${tallyEmbedMode ? 'text-[#C38F27] font-bold' : 'text-slate-400'}`}>CODE EMBED [TALLY]</span>
-            </div>
           </div>
 
-          <div className="relative border border-[#C38F27]/15 bg-[#FAF7F2] rounded-[36px] overflow-hidden p-6 sm:p-10 shadow-lg min-h-[500px] flex flex-col justify-center">
+          <div className="relative border border-[#C38F27]/15 bg-[#FAF7F2] rounded-[36px] overflow-hidden p-2 sm:p-6 shadow-lg min-h-[720px] flex flex-col justify-center">
             
-            {!tallyEmbedMode ? (
-              // NATIVE DÉTOX REGISTRATION FORM
-              <div className="w-full">
-                {formSubmitted ? (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="space-y-6 py-12 text-center"
-                  >
-                    <div className="w-20 h-20 rounded-full bg-[#004D25]/10 flex items-center justify-center mx-auto text-[#004D25]">
-                      <Check className="w-10 h-10" strokeWidth={3} />
-                    </div>
-                    <div className="space-y-2">
-                       <h4 className="text-2xl font-serif text-[#004D25]">Demande Envoyée avec Succès !</h4>
-                      <p className="text-[#524B45] font-light max-w-md mx-auto text-sm leading-relaxed">
-                        Merci beaucoup <strong>{formData.firstName}</strong>. Sissi Gilton va étudier votre profil énergétique et vous recontacter d&apos;ici quelques heures.
-                      </p>
-                    </div>
-                    <div className="pt-4">
-                      <button 
-                        onClick={() => {
-                          setFormSubmitted(false);
-                          setFormData({ firstName:'', lastName:'', email:'', phone:'', dietPreference:'Tous', motivations:'' });
-                        }}
-                        className="px-6 py-2.5 text-xs tracking-wider rounded-full bg-[#C38F27] text-white hover:bg-[#a6771d] transition"
-                      >
-                        REFAIRE UNE INSCRIPTION
-                      </button>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <form onSubmit={handleFormSubmit} className="space-y-6 text-left">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="text-xs font-semibold tracking-wider text-slate-700 uppercase" htmlFor="firstName">Prénom *</label>
-                        <input 
-                          type="text" 
-                          id="firstName"
-                          required
-                          value={formData.firstName}
-                          onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                          className="w-full bg-white border border-[#C38F27]/20 rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-[#C38F27] focus:border-[#C38F27] outline-none transition"
-                          placeholder="Françoise"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-semibold tracking-wider text-slate-700 uppercase" htmlFor="lastName">Nom de famille</label>
-                        <input 
-                          type="text" 
-                          id="lastName"
-                          value={formData.lastName}
-                          onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                          className="w-full bg-white border border-[#C38F27]/20 rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-[#C38F27] focus:border-[#C38F27] outline-none transition"
-                          placeholder="Dupont"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="text-xs font-semibold tracking-wider text-slate-700 uppercase" htmlFor="email">Adresse E-mail *</label>
-                        <input 
-                          type="email" 
-                          id="email"
-                          required
-                          value={formData.email}
-                          onChange={(e) => setFormData({...formData, email: e.target.value})}
-                          className="w-full bg-white border border-[#C38F27]/20 rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-[#C38F27] focus:border-[#C38F27] outline-none transition"
-                          placeholder="francoise@example.fr"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-semibold tracking-wider text-slate-700 uppercase" htmlFor="phone">Téléphone WhatsApp *</label>
-                        <input 
-                          type="tel" 
-                          id="phone"
-                          required
-                          value={formData.phone}
-                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                          className="w-full bg-white border border-[#C38F27]/20 rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-[#C38F27] focus:border-[#C38F27] outline-none transition"
-                          placeholder="+34 699 03 79 98"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-xs font-semibold tracking-wider text-slate-700 uppercase">Avez-vous déjà pratiqué la détox holistique ou le yoga ?</label>
-                      <div className="flex flex-wrap gap-3 pt-1">
-                        {['Jamais', 'Débutant', 'Régulier', 'Avancé'].map((pref) => (
-                          <button
-                            key={pref}
-                            type="button"
-                            onClick={() => setFormData({...formData, dietPreference: pref})}
-                            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium border transition-colors ${formData.dietPreference === pref ? 'bg-[#C38F27] text-white border-transparent' : 'bg-white text-slate-600 border-[#C38F27]/20 hover:border-[#C38F27]'}`}
-                          >
-                            {pref}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-xs font-semibold tracking-wider text-slate-700 uppercase" htmlFor="motivations">Vos principales motivations ou attentes (optionnel)</label>
-                      <textarea 
-                        id="motivations"
-                        rows={3}
-                        value={formData.motivations}
-                        onChange={(e) => setFormData({...formData, motivations: e.target.value})}
-                        className="w-full bg-white border border-[#C38F27]/20 rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-[#C38F27] focus:border-[#C38F27] outline-none transition resize-none"
-                        placeholder="Retrouver mon tonus corporel, clarté mentale et régénération cellulaire..."
-                      />
-                    </div>
-
-                    <div className="pt-4">
-                      <button 
-                        type="submit"
-                        disabled={formLoading}
-                        className="w-full py-4.5 rounded-xl bg-[#004D25] text-white font-semibold text-xs sm:text-sm tracking-widest hover:bg-[#00351B] hover:scale-[1.01] active:scale-100 disabled:opacity-50 flex items-center justify-center gap-2 shadow-md transition-all duration-300 cursor-pointer"
-                      >
-                        {formLoading ? (
-                          <React.Fragment>
-                            <Loader2 className="w-5 h-5 animate-spin" />
-                            <span>VÉRIFICATION EN COURS...</span>
-                          </React.Fragment>
-                        ) : (
-                          <React.Fragment>
-                            <Send className="w-4 h-4 text-white" />
-                            <span>RÉSERVEZ VOTRE PREMIÈRE ÉVALUATION HOLISTIQUE OFFERTE*</span>
-                          </React.Fragment>
-                        )}
-                      </button>
-                      <div className="mt-3 text-center">
-                        <p className="text-[10px] sm:text-xs text-[#012613]/60 font-light tracking-wide italic">
-                          *Cette offre de gratuité est valable jusqu’au 15 août inclus.
-                        </p>
-                      </div>
-                    </div>
-                  </form>
-                )}
+            {tallyLoading && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAF7F2] p-6 z-10 animate-pulse">
+                <Loader2 className="w-8 h-8 animate-spin text-[#C38F27] mb-3" />
+                <p className="text-xs text-[#012613]/60 tracking-wider font-light uppercase">Chargement du formulaire de session bilan sécurisé...</p>
               </div>
-            ) : (
-              // PHYSICAL TALLY FORM EMBED INTEGRATION (Fully functional iframe inside mockup container)
-              <div className="w-full h-full min-h-[500px]">
-                <div className="w-full overflow-hidden rounded-2xl bg-white border border-[#C38F27]/15">
-                  <header className="bg-slate-50 border-b border-[#C38F27]/5 px-4 py-2 flex justify-between items-center text-xs text-slate-400 font-mono">
-                    <span className="flex items-center gap-1.5 font-sans">
-                      <span className="w-2 C bg-green-500 rounded-full inline-block animate-pulse"></span>
-                      Intégration Tally active: tally.so/embed
-                    </span>
-                    <span className="hidden sm:inline">w-full h-full iframe</span>
-                  </header>
-                  <iframe 
-                    src="https://tally.so/embed/mOdp48?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" 
-                    width="100%" 
-                    height="500" 
-                    frameBorder="0" 
-                    marginHeight={0} 
-                    marginWidth={0} 
-                    title="Inscription Rejuvalife"
-                    className="w-full min-h-[480px] bg-transparent"
-                  ></iframe>
-                </div>
-              </div>
+            )}
+            
+            {tallySrc && (
+              <iframe 
+                key={tallySrc}
+                data-tally-src={tallySrc}
+                src={tallySrc} 
+                width="100%" 
+                height="694" 
+                frameBorder="0" 
+                marginHeight={0} 
+                marginWidth={0} 
+                title="Formulaire d'inscription session bilan"
+                onLoad={() => setTallyLoading(false)}
+                className="w-full min-h-[680px] bg-transparent transition-opacity duration-300"
+                style={{ opacity: tallyLoading ? 0 : 1 }}
+              ></iframe>
             )}
             
           </div>
@@ -1243,12 +1103,12 @@ export default function LandingPage() {
               >
                 Gérer les cookies
               </button>
-              <span className="flex items-center gap-1.5 font-sans">
-                <span className="text-[#6E645A] uppercase tracking-widest text-[10px]">MADE BY</span>
-                <span className="font-[family-name:var(--font-caveat)] text-[#C38F27] text-2xl font-semibold tracking-wide normal-case ml-1">
+              <span className="flex items-center gap-1 font-sans">
+                <span className="text-[#6E645A] uppercase tracking-widest text-[9px]">MADE BY</span>
+                <span className="font-[family-name:var(--font-caveat)] text-[#004D25]/80 text-base font-normal tracking-wide normal-case ml-0.5">
                   YPa
                 </span>
-                <span className="text-[#C38F27] ml-0.5">❤</span>
+                <span className="text-[#004D25]/60 text-[10px] ml-0.5">❤</span>
               </span>
             </div>
           </div>
