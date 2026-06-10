@@ -1,5 +1,5 @@
 import type {Metadata} from 'next';
-import { Inter, Cormorant_Garamond, Playfair_Display, Alex_Brush } from 'next/font/google';
+import { Inter, Cormorant_Garamond, Playfair_Display, Alex_Brush, Dancing_Script, Caveat } from 'next/font/google';
 import './globals.css'; // Global styles
 
 const inter = Inter({
@@ -29,6 +29,20 @@ const alexBrush = Alex_Brush({
   display: 'swap',
 });
 
+const dancingScript = Dancing_Script({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-dancing',
+  display: 'swap',
+});
+
+const caveat = Caveat({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-caveat',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   title: 'REJUVALIFE | Longévité, Retraite Détox & Régénération Naturelle',
   description: 'Retrouvez votre énergie naturelle, c’est possible ! Une expérience de 7 jours accompagnée par Sissi Gilton pour purifier votre corps et relancer votre vitalité.',
@@ -36,7 +50,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="fr" className={`${inter.variable} ${cormorant.variable} ${playfair.variable} ${alexBrush.variable} scroll-smooth`}>
+    <html lang="fr" className={`${inter.variable} ${cormorant.variable} ${playfair.variable} ${alexBrush.variable} ${dancingScript.variable} ${caveat.variable} scroll-smooth`}>
       <body suppressHydrationWarning className="antialiased">{children}</body>
     </html>
   );
