@@ -83,7 +83,7 @@ const SLIDES = [
     url: 'https://i.ibb.co/0SMLkY0/audio-7int-grer.png', 
     alt: 'audio-7-integrer-bienfaits-durables-sommeil',
     title: 'Intégration Somatique',
-    desc: 'Ancrer les transformations cellulaires de la retraite pour le long terme.'
+    desc: 'Ancrer les transformations cellulaires de la cure pour le long terme.'
   },
   { 
     id: 9, 
@@ -135,7 +135,7 @@ const TESTIMONIALS = [
     id: 1,
     name: 'FRANÇOISE',
     role: 'Participante Rejuvalife',
-    text: 'Cette retraite a changé ma vie. J’ai retrouvé une énergie incroyable, ma peau est plus lumineuse, mon corps plus léger et mon esprit en paix. Je me sens plus jeune, plus alignée et pleine de gratitude.',
+    text: 'Cette cure a changé ma vie. J’ai retrouvé une énergie incroyable, ma peau est plus lumineuse, mon corps plus léger et mon esprit en paix. Je me sens plus jeune, plus alignée et pleine de gratitude.',
     avatar: 'https://i.ibb.co/YFmwtjL6/Francoise-cliente.jpg',
   },
   {
@@ -466,7 +466,7 @@ export default function LandingPage() {
                 className="space-y-4"
               >
                 <span className="inline-block text-xs sm:text-sm font-bold tracking-[0.22em] text-[#D48F0F] uppercase font-sans">
-                  RETRAITE DÉTOX & RÉGÉNÉRATION
+                  CURE DÉTOX & RÉGÉNÉRATION
                 </span>
                 
                 <h1 className="text-3xl sm:text-4xl lg:text-[3.85rem] xl:text-[4.55rem] lg:w-[135%] xl:w-[145%] lg:max-w-none font-[family-name:var(--font-serif)] font-light text-[#012613] leading-[1.08] tracking-[0.01em] relative z-20">
@@ -872,7 +872,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* EXQUISITE LOWER RETREAT HIGHLIGHTS RETRAITE DETAIL SECTION */}
+      {/* EXQUISITE LOWER HIGHLIGHTS CURE DETAIL SECTION */}
       <section className="relative py-28 text-center text-white overflow-hidden" id="voyage-highlight">
         {/* Premium high-resolution background image using Next.js Image */}
         <div className="absolute inset-0 z-0">
@@ -931,7 +931,7 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-full border border-[#FFDF9B]/20 bg-white/5 flex items-center justify-center mx-auto text-[#FFDF9B] group-hover:scale-110 transition duration-300">
                 <Calendar className="w-5 h-5" />
               </div>
-              <h4 className="text-[10px] tracking-[0.2em] font-bold uppercase text-white/90 group-hover:text-white transition duration-300">7 JOURS DE RETRAITE</h4>
+              <h4 className="text-[10px] tracking-[0.2em] font-bold uppercase text-white/90 group-hover:text-white transition duration-300">7 JOURS DE CURE</h4>
             </div>
 
             {/* Item 2 */}

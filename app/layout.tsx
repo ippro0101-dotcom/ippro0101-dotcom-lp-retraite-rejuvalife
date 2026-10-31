@@ -44,7 +44,7 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: 'REJUVALIFE | Longévité, Retraite Détox & Régénération Naturelle',
+  title: 'REJUVALIFE | Longévité, Cure Détox & Régénération Naturelle',
   description: 'Retrouvez votre énergie naturelle, c’est possible ! Une expérience de 7 jours accompagnée par Sissi Gilton pour purifier votre corps et relancer votre vitalité.',
 };
 
